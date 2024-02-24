@@ -18,8 +18,10 @@ jobs:
           context_name: 'VPS'
           ssh_cert: ${{ secrets.VPS_SSH_CERT }}
           ssh_key: ${{ secrets.VPS_SSH_KEY }}
-      - name: Deploy traefik
-        run: |
-          ssh -i ${{ secrets.SSH_KEY }} -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_SERVER }} "mkdir -p /opt/traefik/configs"
-          scp -r ./configs/traefik/ ${{ secrets.VPS_USER }}@${{ secrets.VPS_SERVER }}:/opt/traefik/configs
+      - run: set -eu
+      - run: mkdir "$HOME/.ssh"
+      - run: echo "${{ secrets.SSH_KEY }}" > "$HOME/.ssh/key"
+      - run: chmod 600 "$HOME/.ssh/key"
+      - run: |
+          rsync -e "ssh -p 22 -i $HOME/.ssh/key -o StrictHostKeyChecking=no" --archive --compress --delete ./configs/traefik/* ${{ secrets.VPS_USER }}@${{ secrets.VPS_SERVER }}:/opt/traefik/configs
           docker --context VPS compose -f traefik.yml -p traefik up -d
