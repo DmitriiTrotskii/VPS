@@ -1,0 +1,48 @@
+---
+version: "3"
+
+networks:
+  traefik-network:
+    name: traefik-network
+
+volumes:
+  certificates:
+    name: certificates
+
+services:
+  traefik:
+    image: traefik:v2.11
+    container_name: traefik
+    restart: unless-stopped
+    environment:
+      - TZ=Asia/Krasnoyarks
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=traefik-network
+      - traefik.http.routers.traefik.entrypoints=https
+      - traefik.http.routers.traefik.middlewares=adminList@file,defaultAuth@file,default@file
+      - traefik.http.routers.traefik.rule=Host("traefik.bwonsamdi.ru")
+      - traefik.http.routers.traefik.tls=true
+      - traefik.http.routers.traefik.tls.certresolver=letsencrypt
+      - traefik.http.routers.traefik.tls.options=modern@file
+      - traefik.http.routers.traefik.service=api@internal
+      - traefik.http.services.traefik.loadbalancer.server.port=8080
+    healthcheck:
+      test: ["CMD", "wget", "-c", "http://localhost:8888/ping"]
+      interval: 2s
+      timeout: 1s
+      retries: 3
+    networks:
+      - traefik-network
+    ports:
+      - mode: global
+        published: 80
+        target: 80
+      - mode: global
+        published: 443
+        target: 443
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /opt/traefik/configs:/etc/traefik:ro
+      - certificates:/var/traefik/certificates

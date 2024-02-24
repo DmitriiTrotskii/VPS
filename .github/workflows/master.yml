@@ -1,0 +1,26 @@
+name: VPS docker composer 
+
+on:
+  push:
+    branches:
+      - 'master'
+    paths-ignore:
+      - 'README.md'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: arwynfr/actions-docker-context@v2
+        with:
+          docker_host: 'ssh://${{ secret.VPS_USER }}@${{ secret.VPS_SERVER }}'
+          context_name: 'VPS'
+          ssh_cert: ${{ secrets.VPS_SSH_CERT }}
+          ssh_key: ${{ secrets.VPS_SSH_KEY }}
+      - name: Deploy traefik
+        run:
+          -> 
+          ssh ${{ secret.VPS_USER }}@${{ secret.VPS_SERVER }} "mkdir -p /opt/traefik/configs"
+          scp -r ./configs/traefik/ ${{ secret.VPS_USER }}@${{ secrets.VPS_SERVER }}:/opt/traefik/configs
+          docker --context VPS compose -f traefik.yml -p traefik up -d
