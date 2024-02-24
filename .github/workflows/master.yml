@@ -20,6 +20,6 @@ jobs:
           ssh_key: ${{ secrets.VPS_SSH_KEY }}
       - name: Deploy traefik
         run: |
-          ssh -o StrictHostKeyChecking=no -o UserKnownHostFiles=/dev/null ${{ secrets.VPS_USER }}@${{ secrets.VPS_SERVER }} "mkdir -p /opt/traefik/configs"
+          ssh -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_SERVER }} "mkdir -p /opt/traefik/configs"
           scp -r ./configs/traefik/ ${{ secrets.VPS_USER }}@${{ secrets.VPS_SERVER }}:/opt/traefik/configs
           docker --context VPS compose -f traefik.yml -p traefik up -d
