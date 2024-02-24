@@ -21,6 +21,6 @@ jobs:
       - name: Deploy traefik
         run:
           -> 
-          ssh ${{ secret.VPS_USER }}@${{ secret.VPS_SERVER }} "mkdir -p /opt/traefik/configs"
-          scp -r ./configs/traefik/ ${{ secret.VPS_USER }}@${{ secrets.VPS_SERVER }}:/opt/traefik/configs
+          ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_SERVER }} "mkdir -p /opt/traefik/configs"
+          scp -r ./configs/traefik/ ${{ secrets.VPS_USER }}@${{ secrets.VPS_SERVER }}:/opt/traefik/configs
           docker --context VPS compose -f traefik.yml -p traefik up -d
