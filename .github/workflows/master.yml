@@ -19,7 +19,7 @@ jobs:
           ssh_cert: ${{ secrets.VPS_SSH_CERT }}
           ssh_key: ${{ secrets.VPS_SSH_KEY }}
       - run: set -eu
-      - run: apt install -y rsync
+      - run: sudo apt install -y rsync
       - run: sudo echo "${{ secrets.SSH_KEY }}" > "$HOME/.ssh/key"
       - run: sudo chmod 600 "$HOME/.ssh/key"
       - run: |
