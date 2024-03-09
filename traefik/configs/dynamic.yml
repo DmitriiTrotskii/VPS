@@ -1,8 +1,5 @@
 http:
   middlewares:
-    defaultAuth:
-      basicAuth:
-        usersfile: /etc/traefik/secrets
 
     default:
       chain:
@@ -10,7 +7,7 @@ http:
           - HSTS
           - gzip
 
-    adminList:
+    srcAllowedList:
       ipWhiteList:
         sourceRange:
           - 94.73.239.16
