@@ -24,7 +24,7 @@ jobs:
         run: | 
           mkdir -p $HOME/.ssh
           echo "${{ secrets.SSH_KEY }}" > $HOME/.ssh/id_rsa
-          echo "Host *" > $HOME/.ssh/config
+          echo "Host ${{ secrets.VPS_SERVER }}" > $HOME/.ssh/config
           echo " StrictHostKeyChecking no" >> $HOME/.ssh/config
           echo " UserKnownHostsFile /dev/null" >> $HOME/.ssh/config
           sudo chmod 400 $HOME/.ssh/*
@@ -56,7 +56,7 @@ jobs:
         run: | 
           mkdir -p $HOME/.ssh
           echo "${{ secrets.SSH_KEY }}" > $HOME/.ssh/id_rsa
-          echo "Host *" > $HOME/.ssh/config
+          echo "Host ${{ secrets.VPS_SERVER }}" > $HOME/.ssh/config
           echo " StrictHostKeyChecking no" >> $HOME/.ssh/config
           echo " UserKnownHostsFile /dev/null" >> $HOME/.ssh/config
           sudo chmod 400 $HOME/.ssh/*
@@ -85,7 +85,9 @@ jobs:
         run: | 
           mkdir -p $HOME/.ssh
           echo "${{ secrets.SSH_KEY }}" > $HOME/.ssh/id_rsa
-          echo -e "Host *\n StrictHostKeyChecking no\n UserKnownHostsFile /dev/null\n" > $HOME/.ssh/config
+          echo "Host ${{ secrets.VPS_SERVER }}" > $HOME/.ssh/config
+          echo " StrictHostKeyChecking no" >> $HOME/.ssh/config
+          echo " UserKnownHostsFile /dev/null" >> $HOME/.ssh/config
           sudo chmod 400 $HOME/.ssh/*
           sudo service ssh restart
 
