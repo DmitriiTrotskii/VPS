@@ -1,4 +1,4 @@
-name: VPS docker composer 
+name: Remote server composer
 
 on:
   push:
@@ -6,6 +6,8 @@ on:
       - 'master'
     paths-ignore:
       - 'README.md'
+
+  workflow_dispatch:
 
 jobs:
   Traefik:
