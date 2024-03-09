@@ -12,14 +12,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Install rsync and ssh
+        run: sudo apt install -y rsync ssh
+
       - name: Config ssh
-        run: | 
-          sudo apt install -y rsync ssh
-          mkdir -p $HOME/.ssh
-          echo "${{ secrets.SSH_KEY }}" > $HOME/.ssh/id_rsa
-          echo "Host *" > $HOME/.ssh/config && echo " StrictHostKeyChecking no" >> $HOME/.ssh/config && echo " UserKnownHostsFile /dev/null" >> $HOME/.ssh/config
-          sudo chmod 400 $HOME/.ssh/*
-          sudo service ssh restart
+        uses: ./.github/actions/config-ssh.yml
       - name: Config traefik
         run: |
           ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_SERVER }} "mkdir -p /opt/traefik/configs"

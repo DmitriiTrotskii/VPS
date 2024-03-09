@@ -1,0 +1,10 @@
+name: SSH config
+
+jobs:
+  config:
+    steps:
+      - run: mkdir -p $HOME/.ssh
+      - run: echo "${{ secrets.SSH_KEY }}" > $HOME/.ssh/id_rsa
+      - run: echo "Host *" > $HOME/.ssh/config && echo " StrictHostKeyChecking no" >> $HOME/.ssh/config && echo " UserKnownHostsFile /dev/null" >> $HOME/.ssh/config
+      - run: sudo chmod 400 $HOME/.ssh/*
+      - run: sudo service ssh restart
