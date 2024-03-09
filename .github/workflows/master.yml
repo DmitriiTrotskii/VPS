@@ -11,7 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: sudo apt install -y rsync
+      - run: sudo apt install -y rsync ssh
+      - run: ls -la $HOME && ls -l $HOME/.ssh
       - run: echo "${{ secrets.SSH_KEY }}" > ./id_rsa
       - run: sudo chmod 600 ./id_rsa
       - run: rsync -e "ssh -i ./id_rsa -o StrictHostKeyChecking=no" --archive --compress --delete ./configs/traefik/* ${{ secrets.VPS_USER }}@${{ secrets.VPS_SERVER }}:/opt/traefik/configs
