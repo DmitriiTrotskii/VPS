@@ -6,18 +6,26 @@ on:
       - 'master'
     paths-ignore:
       - 'README.md'
+
 jobs:
-  deploy:
+  Traefik:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - run: sudo apt install -y rsync ssh
-      - run: mkdir -p $HOME/.ssh
-      - run: echo "${{ secrets.SSH_KEY }}" > $HOME/.ssh/id_rsa
-      - run: echo "Host *" > $HOME/.ssh/config && echo " StrictHostKeyChecking no" >> $HOME/.ssh/config && echo " UserKnownHostsFile /dev/null" >> $HOME/.ssh/config
-      - run: sudo chmod 400 $HOME/.ssh/*
-      - run: sudo service ssh restart
-      - run: ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_SERVER }} "chown -R ${{ secrets.VPS_USER }}:docker /opt/traefik"
-      - run: rsync --archive --compress --delete ./configs/traefik/* ${{ secrets.VPS_USER }}@${{ secrets.VPS_SERVER }}:/opt/traefik/configs
-      - run: docker context create ssh-box --docker "host=ssh://${{ secrets.VPS_USER }}@${{ secrets.VPS_SERVER }}"
-      - run: docker --context ssh-box compose -f ./traefik.yml -p traefik up -d
+      - name: Config ssh
+        run: | 
+          sudo apt install -y rsync ssh
+          mkdir -p $HOME/.ssh
+          echo "${{ secrets.SSH_KEY }}" > $HOME/.ssh/id_rsa
+          echo "Host *" > $HOME/.ssh/config && echo " StrictHostKeyChecking no" >> $HOME/.ssh/config && echo " UserKnownHostsFile /dev/null" >> $HOME/.ssh/config
+          sudo chmod 400 $HOME/.ssh/*
+          sudo service ssh restart
+      - name: Copy config to remote server
+        uses: actions/checkout@v4
+        run: |
+          rsync --archive --compress --delete traefik/configs/* ${{ secrets.VPS_USER }}@${{ secrets.VPS_SERVER }}:/opt/traefik/configs
+          ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_SERVER }} "chown -R ${{ secrets.VPS_USER }}:docker /opt/traefik"
+      - name: Deploy service
+        uses: actions/checkout@v4
+        run: |
+          docker context create ssh-box --docker "host=ssh://${{ secrets.VPS_USER }}@${{ secrets.VPS_SERVER }}"
+          docker --context ssh-box compose -f traefik/docker-compose.yml -p traefik up -d
