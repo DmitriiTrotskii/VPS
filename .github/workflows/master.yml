@@ -22,6 +22,4 @@ jobs:
       - run: sudo apt install -y rsync
       - run: sudo echo "${{ secrets.SSH_KEY }}" > "$HOME/.ssh/key"
       - run: sudo chmod 600 "$HOME/.ssh/key"
-      - run: |
-          rsync -e "ssh -p 22 -i $HOME/.ssh/key -o StrictHostKeyChecking=no" --archive --compress --delete ./configs/traefik/* ${{ secrets.VPS_USER }}@${{ secrets.VPS_SERVER }}:/opt/traefik/configs
-          docker --context VPS compose -f traefik.yml -p traefik up -d
+      - run: rsync -e "ssh -p 22 -i $HOME/.ssh/key -o StrictHostKeyChecking=no" --archive --compress --delete ./configs/traefik/* ${{ secrets.VPS_USER }}@${{ secrets.VPS_SERVER }}:/opt/traefik/configs
