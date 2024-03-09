@@ -32,6 +32,7 @@ jobs:
 
   AdGuard:
     runs-on: ubuntu-latest
+    needs: Traefik
     steps:
       - uses: actions/checkout@v4
       - name: Config ssh
@@ -45,9 +46,9 @@ jobs:
       - name: Copy config to remote server
         run: |
           ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_SERVER }} "mkdir -p /opt/adguardhome/conf"
-          rsync --archive --compress --delete adguad/config/* ${{ secrets.VPS_USER }}@${{ secrets.VPS_SERVER }}:/opt/adguardhome/conf
+          rsync --archive --compress --delete adguard/configs/* ${{ secrets.VPS_USER }}@${{ secrets.VPS_SERVER }}:/opt/adguardhome/conf
           ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_SERVER }} "chown -R ${{ secrets.VPS_USER }}:docker /opt/adguardhome"
       - name: Deploy service
         run: |
           docker context create ssh-box --docker "host=ssh://${{ secrets.VPS_USER }}@${{ secrets.VPS_SERVER }}"
-          docker --context ssh-box compose -f adguad/docker-compose.yml -p adguard up -d
+          docker --context ssh-box compose -f adguard/docker-compose.yml -p adguard up -d
