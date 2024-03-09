@@ -25,7 +25,6 @@ jobs:
           echo "${{ secrets.TRAEFIK }}" > traefik/configs/secrets
           ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_SERVER }} "mkdir -p /opt/traefik/configs"
           rsync --archive --compress --delete traefik/configs/* ${{ secrets.VPS_USER }}@${{ secrets.VPS_SERVER }}:/opt/traefik/configs
-          rsync --archive --compress --delete secrets ${{ secrets.VPS_USER }}@${{ secrets.VPS_SERVER }}:/opt/traefik/
           rm -rf secrets
           ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_SERVER }} "chown -R ${{ secrets.VPS_USER }}:docker /opt/traefik"
       - name: Deploy service
