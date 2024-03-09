@@ -15,7 +15,9 @@ jobs:
       - run: sudo mkdir -p $HOME/.ssh && sudo chown -R runner:docker $HOME/.ssh
       - run: sudo echo "${{ secrets.SSH_KEY }}" > $HOME/.ssh/id_rsa && sudo chmod 600 $HOME/.ssh/id_rsa
       - run: sudo echo "Host *" > $HOME/.ssh/config && sudo echo " StrictHostKeyChecking no" > $HOME/.ssh/config && sudo echo " UserKnownHostsFile /dev/null" > $HOME/.ssh/config && sudo chmod 400 ~/.ssh/config
-      - run: rsync -e "ssh -i $HOME/.ssh/id_rsa -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" --archive --compress --delete ./configs/traefik/* ${{ secrets.VPS_USER }}@${{ secrets.VPS_SERVER }}:/opt/traefik/configs
-      - run: ssh -i $HOME/.ssh/id_rsa -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${{ secrets.VPS_USER }}@${{ secrets.VPS_SERVER }} "chown -R ${{ secrets.VPS_USER }}:docker /opt/traefik"
+      - run: sudo cat $HOME/.ssh/config
+      - run: sudo service ssh restart
+      - run: rsync -e --archive --compress --delete ./configs/traefik/* ${{ secrets.VPS_USER }}@${{ secrets.VPS_SERVER }}:/opt/traefik/configs
+      - run: ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_SERVER }} "chown -R ${{ secrets.VPS_USER }}:docker /opt/traefik"
       - run: docker context create ssh-box --docker "host=ssh://${{ secrets.VPS_USER }}@${{ secrets.VPS_SERVER }}"
       - run: docker --context ssh-box compose -f ./traefik.yml -p traefik up -d
