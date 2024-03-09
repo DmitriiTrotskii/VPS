@@ -16,5 +16,5 @@ jobs:
       - run: sudo chmod 600 ./id_rsa
       - run: rsync -e "ssh -i ./id_rsa -o StrictHostKeyChecking=no" --archive --compress --delete ./configs/traefik/* ${{ secrets.VPS_USER }}@${{ secrets.VPS_SERVER }}:/opt/traefik/configs
       - run: ssh -i ./id_rsa -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_SERVER }} "chown -R ${{ secrets.VPS_USER }}:docker /opt/traefik"
-      - run: docker context create ssh-box --docker "host=ssh://${{ secrets.VPS_USER }}@${{ secrets.VPS_SERVER }}"
+      - run: docker context create ssh-box --docker "host=ssh://${{ secrets.VPS_USER }}@${{ secrets.VPS_SERVER }},key=./id_rsa"
       - run: docker --context ssh-box compose -f ./traefik.yml -p traefik up -d
