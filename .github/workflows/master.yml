@@ -68,4 +68,4 @@ jobs:
       - name: Docker system prune
         run: |
           docker context create ssh-box --docker "host=ssh://${{ secrets.VPS_USER }}@${{ secrets.VPS_SERVER }}"
-          docker --context ssh-box system prune
+          docker --context ssh-box system prune -a -f
