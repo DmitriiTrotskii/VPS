@@ -12,7 +12,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: sudo apt install -y rsync
-      - run: sudo mkdir -p $HOME/.ssh && echo "${{ secrets.SSH_KEY }}" > "$HOME/.ssh/id_rsa"
+      - run: sudo mkdir -p $HOME/.ssh && sudo echo "${{ secrets.SSH_KEY }}" > "$HOME/.ssh/id_rsa"
       - run: sudo chmod 600 "$HOME/.ssh/id_rsa"
       - run: rsync -e "ssh -i $HOME/.ssh/id_rsa -o StrictHostKeyChecking=no" --archive --compress --delete ./configs/traefik/* ${{ secrets.VPS_USER }}@${{ secrets.VPS_SERVER }}:/opt/traefik/configs
       - run: ssh -i $HOME/.ssh/key -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_SERVER }} "chown -R ${{ secrets.VPS_USER }}:docker /opt/traefik"
