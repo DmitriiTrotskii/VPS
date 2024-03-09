@@ -21,7 +21,7 @@ services:
       - traefik.docker.network=traefik-network
       - traefik.http.routers.traefik.entrypoints=https
       - traefik.http.routers.traefik.middlewares=adminList@file,defaultAuth@file,default@file
-      - traefik.http.routers.traefik.rule=Host("traefik.bwonsamdi.ru") || Host("test.bwonsamdi.ru")
+      - traefik.http.routers.traefik.rule=Host("traefik.bwonsamdi.ru")
       - traefik.http.routers.traefik.tls=true
       - traefik.http.routers.traefik.tls.certresolver=letsencrypt
       - traefik.http.routers.traefik.tls.options=modern@file
