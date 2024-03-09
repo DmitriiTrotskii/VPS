@@ -16,7 +16,7 @@ jobs:
         run: sudo apt install -y rsync ssh
 
       - name: Config ssh
-        uses: ./.github/actions/config-ssh.yml
+        uses: ./.github/actions/SSH
       - name: Config traefik
         run: |
           ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_SERVER }} "mkdir -p /opt/traefik/configs"
