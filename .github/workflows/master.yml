@@ -11,6 +11,7 @@ jobs:
   Traefik:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
       - name: Config ssh
         run: | 
           sudo apt install -y rsync ssh
@@ -20,12 +21,10 @@ jobs:
           sudo chmod 400 $HOME/.ssh/*
           sudo service ssh restart
       - name: Copy config to remote server
-        uses: actions/checkout@v4
         run: |
           rsync --archive --compress --delete traefik/configs/* ${{ secrets.VPS_USER }}@${{ secrets.VPS_SERVER }}:/opt/traefik/configs
           ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_SERVER }} "chown -R ${{ secrets.VPS_USER }}:docker /opt/traefik"
       - name: Deploy service
-        uses: actions/checkout@v4
         run: |
           docker context create ssh-box --docker "host=ssh://${{ secrets.VPS_USER }}@${{ secrets.VPS_SERVER }}"
           docker --context ssh-box compose -f traefik/docker-compose.yml -p traefik up -d
