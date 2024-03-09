@@ -12,7 +12,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: sudo apt install -y rsync ssh
-      - run: sudo mkdir -p $HOME/.ssh && sudo echo "${{ secrets.SSH_KEY }}" > $HOME/.ssh/id_rsa && sudo chown -R runner:docker $HOME/.ssh
+      - run: sudo mkdir -p $HOME/.ssh && sudo chown -R runner:docker $HOME/.ssh && sudo echo "${{ secrets.SSH_KEY }}" > $HOME/.ssh/id_rsa
       - run: ls -la $HOME && ls -l $HOME/.ssh
       - run: echo "${{ secrets.SSH_KEY }}" > ./id_rsa
       - run: sudo chmod 600 ./id_rsa
