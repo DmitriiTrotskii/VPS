@@ -55,6 +55,7 @@ jobs:
 
   Prune:
     runs-on: ubuntu-latest
+    needs: [Traefik, AdGuard]
     steps:
       - name: Config ssh
         run: | 
