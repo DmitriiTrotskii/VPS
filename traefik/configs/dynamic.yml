@@ -2,7 +2,6 @@ http:
   middlewares:
     defaultAuth:
       basicAuth:
-        headerField: X-WebAuth-User
         usersfile: /etc/traefik/secrets
 
     default:
