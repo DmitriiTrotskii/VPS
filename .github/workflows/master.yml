@@ -20,10 +20,12 @@ jobs:
           echo "Host *" > $HOME/.ssh/config && echo " StrictHostKeyChecking no" >> $HOME/.ssh/config && echo " UserKnownHostsFile /dev/null" >> $HOME/.ssh/config
           sudo chmod 400 $HOME/.ssh/*
           sudo service ssh restart
-      - name: Copy config to remote server
+      - name: Config traefik
         run: |
+          echo "${{ secrets.TRAEFIK }}" > traefik.secrest
           ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_SERVER }} "mkdir -p /opt/traefik/configs"
           rsync --archive --compress --delete traefik/configs/* ${{ secrets.VPS_USER }}@${{ secrets.VPS_SERVER }}:/opt/traefik/configs
+          rsync --archive --compress --delete traefik.secrest ${{ secrets.VPS_USER }}@${{ secrets.VPS_SERVER }}:/opt/traefik/traefik.secrest
           ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_SERVER }} "chown -R ${{ secrets.VPS_USER }}:docker /opt/traefik"
       - name: Deploy service
         run: |

@@ -2,8 +2,8 @@ http:
   middlewares:
     defaultAuth:
       basicAuth:
-        users:
-          - "dtrotskiy:$2a$10$8Oey3MCPB5eJ31.iMaYwo.Q0GJ79QaKlpr6rYq3eqvV4SGzc5asFq"
+        headerField: X-WebAuth-User
+        usersfile: /etc/traefik/secrets
 
     default:
       chain:

@@ -45,4 +45,5 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - /opt/traefik/configs:/etc/traefik:ro
+      - /opt/traefik/secrets:/etc/traefik/secrets:ro
       - certificates:/var/traefik/certificates
