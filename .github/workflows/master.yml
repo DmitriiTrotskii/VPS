@@ -12,6 +12,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: sudo apt install -y rsync ssh
+      - run: sudo mkdir -p $HOME/.ssh
       - run: ls -la $HOME && ls -l $HOME/.ssh
       - run: echo "${{ secrets.SSH_KEY }}" > ./id_rsa
       - run: sudo chmod 600 ./id_rsa
