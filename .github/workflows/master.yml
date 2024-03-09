@@ -11,21 +11,30 @@ jobs:
   Traefik:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - name: Config ssh
+
+      - name: checkout
+        uses: actions/checkout@v4
+
+      - name: ensure packeges installed
+        run: sudo apt install -y rsync ssh
+
+      - name: config ssh
         run: | 
-          sudo apt install -y rsync ssh
           mkdir -p $HOME/.ssh
           echo "${{ secrets.SSH_KEY }}" > $HOME/.ssh/id_rsa
-          echo "Host *" > $HOME/.ssh/config && echo " StrictHostKeyChecking no" >> $HOME/.ssh/config && echo " UserKnownHostsFile /dev/null" >> $HOME/.ssh/config
+          echo "Host *" > $HOME/.ssh/config
+          echo " StrictHostKeyChecking no" >> $HOME/.ssh/config
+          echo " UserKnownHostsFile /dev/null" >> $HOME/.ssh/config
           sudo chmod 400 $HOME/.ssh/*
           sudo service ssh restart
-      - name: Config traefik
+  
+      - name: config service
         run: |
           ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_SERVER }} "mkdir -p /opt/traefik/configs"
           rsync --archive --compress --delete traefik/configs/* ${{ secrets.VPS_USER }}@${{ secrets.VPS_SERVER }}:/opt/traefik/configs
           ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_SERVER }} "chown -R ${{ secrets.VPS_USER }}:docker /opt/traefik"
-      - name: Deploy service
+
+      - name: deploy service
         run: |
           docker context create ssh-box --docker "host=ssh://${{ secrets.VPS_USER }}@${{ secrets.VPS_SERVER }}"
           docker --context ssh-box compose -f traefik/docker-compose.yml -p traefik up -d
@@ -34,21 +43,30 @@ jobs:
     runs-on: ubuntu-latest
     needs: Traefik
     steps:
-      - uses: actions/checkout@v4
-      - name: Config ssh
+
+      - name: checkout
+        uses: actions/checkout@v4
+
+      - name: ensure packeges installed
+        run: sudo apt install -y rsync ssh
+
+      - name: config ssh
         run: | 
-          sudo apt install -y rsync ssh
           mkdir -p $HOME/.ssh
           echo "${{ secrets.SSH_KEY }}" > $HOME/.ssh/id_rsa
-          echo "Host *" > $HOME/.ssh/config && echo " StrictHostKeyChecking no" >> $HOME/.ssh/config && echo " UserKnownHostsFile /dev/null" >> $HOME/.ssh/config
+          echo "Host *" > $HOME/.ssh/config
+          echo " StrictHostKeyChecking no" >> $HOME/.ssh/config
+          echo " UserKnownHostsFile /dev/null" >> $HOME/.ssh/config
           sudo chmod 400 $HOME/.ssh/*
           sudo service ssh restart
-      - name: Copy config to remote server
+  
+      - name: config service
         run: |
           ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_SERVER }} "mkdir -p /opt/adguardhome/conf"
           rsync --archive --compress --delete adguard/configs/* ${{ secrets.VPS_USER }}@${{ secrets.VPS_SERVER }}:/opt/adguardhome/conf
           ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_SERVER }} "chown -R ${{ secrets.VPS_USER }}:docker /opt/adguardhome"
-      - name: Deploy service
+
+      - name: deploy service
         run: |
           docker context create ssh-box --docker "host=ssh://${{ secrets.VPS_USER }}@${{ secrets.VPS_SERVER }}"
           docker --context ssh-box compose -f adguard/docker-compose.yml -p adguard up -d
@@ -57,14 +75,18 @@ jobs:
     runs-on: ubuntu-latest
     needs: [Traefik, AdGuard]
     steps:
-      - name: Config ssh
+
+      - name: ensure packeges installed
+        run: sudo apt install -y rsync ssh
+
+      - name: config ssh
         run: | 
-          sudo apt install -y rsync ssh
           mkdir -p $HOME/.ssh
           echo "${{ secrets.SSH_KEY }}" > $HOME/.ssh/id_rsa
           echo "Host *" > $HOME/.ssh/config && echo " StrictHostKeyChecking no" >> $HOME/.ssh/config && echo " UserKnownHostsFile /dev/null" >> $HOME/.ssh/config
           sudo chmod 400 $HOME/.ssh/*
           sudo service ssh restart
+
       - name: Docker system prune
         run: |
           docker context create ssh-box --docker "host=ssh://${{ secrets.VPS_USER }}@${{ secrets.VPS_SERVER }}"
