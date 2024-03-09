@@ -52,3 +52,19 @@ jobs:
         run: |
           docker context create ssh-box --docker "host=ssh://${{ secrets.VPS_USER }}@${{ secrets.VPS_SERVER }}"
           docker --context ssh-box compose -f adguard/docker-compose.yml -p adguard up -d
+
+  Prune:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Config ssh
+        run: | 
+          sudo apt install -y rsync ssh
+          mkdir -p $HOME/.ssh
+          echo "${{ secrets.SSH_KEY }}" > $HOME/.ssh/id_rsa
+          echo "Host *" > $HOME/.ssh/config && echo " StrictHostKeyChecking no" >> $HOME/.ssh/config && echo " UserKnownHostsFile /dev/null" >> $HOME/.ssh/config
+          sudo chmod 400 $HOME/.ssh/*
+          sudo service ssh restart
+      - name: Docker system prune
+        run: |
+          docker context create ssh-box --docker "host=ssh://${{ secrets.VPS_USER }}@${{ secrets.VPS_SERVER }}"
+          docker --context ssh-box system prune
