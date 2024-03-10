@@ -39,7 +39,6 @@ services:
     container_name: wgNginx
     environment:
       - TZ=Asia/Krasnoyarks
-      - NGINX_PORT=8080
     labels:
       - traefik.enable=true
       - traefik.docker.network=traefik-network
@@ -49,7 +48,7 @@ services:
       - traefik.http.routers.wgNginx.tls=true
       - traefik.http.routers.wgNginx.tls.certresolver=letsencrypt
       - traefik.http.routers.wgNginx.tls.options=modern@file
-      - traefik.http.services.wgNginx.loadbalancer.server.port=8080
+      - traefik.http.services.wgNginx.loadbalancer.server.port=80
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - wgConfigs:/usr/share/nginx/html:ro
