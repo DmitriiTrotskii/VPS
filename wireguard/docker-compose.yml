@@ -39,6 +39,8 @@ services:
     container_name: wgNginx
     environment:
       - TZ=Asia/Krasnoyarks
+    networks:
+      - traefik-network
     labels:
       - traefik.enable=true
       - traefik.docker.network=traefik-network
