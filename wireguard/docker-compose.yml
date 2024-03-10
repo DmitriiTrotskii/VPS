@@ -45,7 +45,7 @@ services:
       - traefik.docker.network=traefik-network
       - traefik.http.routers.wgNginx.entrypoints=https
       - traefik.http.routers.wgNginx.rule=Host("wg.bwonsamdi.ru")
-      - traefik.http.routers.wgNginx.middlewares=adminList@file,defaultAuth@file,default@file
+      - traefik.http.routers.wgNginx.middlewares=srcAllowedList@file,default@file
       - traefik.http.routers.wgNginx.tls=true
       - traefik.http.routers.wgNginx.tls.certresolver=letsencrypt
       - traefik.http.routers.wgNginx.tls.options=modern@file
