@@ -4,15 +4,15 @@ http:
     default:
       chain:
         middlewares:
-          - HSTS
-          - gzip
+          - strictTransportSecurity
+          - gZip
 
     srcAllowedList:
       ipWhiteList:
         sourceRange:
           - 94.73.239.16
 
-    HSTS:
+    strictTransportSecurity:
       headers:
         browserXssFilter: true
         contentTypeNosniff: true
@@ -24,7 +24,7 @@ http:
         stsPreload: true
         stsSeconds: 63072000
 
-    gzip:
+    gZip:
       compress: {}
 
 tls:
