@@ -65,7 +65,7 @@ jobs:
       - name: deploy service
         run: |
           docker context create ssh-box --docker "host=ssh://${{ secrets.VPS_USER }}@${{ secrets.VPS_SERVER }}"
-          docker --context ssh-box compose -f adguard/docker-compose.yml -p adguard up -d
+          docker --context ssh-box compose -f wireguard/docker-compose.yml -p wireguard up -d
 
   AdGuard:
     runs-on: ubuntu-latest
