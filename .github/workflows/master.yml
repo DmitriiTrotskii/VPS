@@ -101,7 +101,7 @@ jobs:
 
   Prune:
     runs-on: ubuntu-latest
-    needs: [Traefik, AdGuard]
+    needs: [Traefik, AdGuard, wireguard]
     steps:
 
       - name: ensure packeges installed
