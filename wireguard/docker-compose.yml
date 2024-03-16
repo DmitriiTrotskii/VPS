@@ -18,6 +18,8 @@ services:
       - NET_ADMIN
       - SYS_MODULE
     environment:
+      - PUID=101
+      - PGID=101
       - TZ=Asia/Krasnoyarks
       - SERVERURL=auto
       - SERVERPORT=51820
