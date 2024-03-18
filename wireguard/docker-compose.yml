@@ -55,4 +55,5 @@ services:
       - traefik.http.services.wgNginx.loadbalancer.server.port=80
     volumes:
       - /etc/localtime:/etc/localtime:ro
+      - /opt/wgNginx/conf.d:/etc/nginx/conf.d:ro
       - wgConfigs:/usr/share/nginx/html:ro
